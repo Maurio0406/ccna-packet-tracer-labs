@@ -1,7 +1,7 @@
 # CCNA Packet Tracer Labs
 
 ## Project Overview
-This repository documents my hands-on networking practice while studying for the Cisco CCNA. I will use Cisco Packet Tracer to build networks, configure Cisco devices, troubleshoot connectivity problems, and connect the concepts I study to practical labs.
+This repository documents my hands-on networking practice while studying for the Cisco CCNA. I use Cisco Packet Tracer to build networks, configure Cisco devices, troubleshoot connectivity problems, and connect the concepts I study to practical labs.
 
 This repository will grow as my networking knowledge improves.
 
@@ -25,12 +25,57 @@ This repository will grow as my networking knowledge improves.
 
 ## Lab Progress
 
-### Lab 1 - Basic LAN
-- [ ] Add two PCs and a switch
-- [ ] Connect the devices
-- [ ] Configure IPv4 addresses
-- [ ] Verify connectivity with ping
-- [ ] Document what each device does
+### Lab 1 - Basic LAN ✅
+- [x] Add two PCs and a Cisco 2960 switch
+- [x] Connect the PCs to the switch with Copper Straight-Through cables
+- [x] Configure static IPv4 addresses
+- [x] Verify connectivity with ping
+- [x] Inspect the ARP table
+- [x] Inspect the switch MAC address table
+- [x] Create and troubleshoot an intentional subnet mismatch
+
+#### Topology
+```text
+PC1 ---------------- Cisco 2960 ---------------- PC2
+192.168.10.10/24                              192.168.10.11/24
+```
+
+#### Addressing
+| Device | IPv4 Address | Subnet Mask | Network |
+| --- | --- | --- | --- |
+| PC1 | 192.168.10.10 | 255.255.255.0 | 192.168.10.0/24 |
+| PC2 | 192.168.10.11 | 255.255.255.0 | 192.168.10.0/24 |
+
+No default gateway is required for this lab because both hosts are on the same subnet.
+
+#### Verification
+PC1 successfully pinged PC2 at `192.168.10.11` with 4 packets sent, 4 received, and 0% packet loss.
+
+I used `arp -a` to verify the IP-to-MAC mapping learned through ARP.
+
+On the switch, I used:
+```text
+enable
+show mac address-table
+```
+
+The switch dynamically learned MAC addresses on its FastEthernet ports.
+
+#### Troubleshooting Exercise
+I changed PC2 from `192.168.10.11/24` to `192.168.20.11/24`. PC1 then received 100% packet loss when pinging PC2.
+
+PC1 belonged to `192.168.10.0/24`, while PC2 belonged to `192.168.20.0/24`. Since there was no router or default gateway, the two different networks had no Layer 3 path between them.
+
+I restored PC2 to `192.168.10.11/24` and verified connectivity again.
+
+#### What I Learned
+- Devices on the same subnet communicate through a switch without needing a router.
+- Each host on a subnet needs a unique IP address.
+- ARP maps an IPv4 address to a MAC address.
+- `arp -a` displays learned ARP entries on a PC.
+- A Layer 2 switch learns source MAC addresses and associates them with switch ports.
+- `show mac address-table` displays the switch MAC address table.
+- Communication between different IP networks requires Layer 3 routing.
 
 ### Lab 2 - Routing Between Networks
 - [ ] Add a router
@@ -59,29 +104,34 @@ This repository will grow as my networking knowledge improves.
 ## Troubleshooting Log
 I will document networking problems here instead of only recording successful configurations.
 
-### Issue Template
-Problem:
+### Lab 1 - Hosts on Different Subnets
+Problem: PC1 could not reach PC2 after PC2's address was changed.
 
-Expected behavior:
+Expected behavior: The ping should fail because the hosts were on different /24 networks without a router.
 
-Actual behavior:
+Actual behavior: Four ping requests timed out, resulting in 100% packet loss.
 
 Commands/tools used:
+- `ping`
+- `arp -a`
+- `show mac address-table`
 
-Root cause:
+Root cause: PC1 was on `192.168.10.0/24` and PC2 was on `192.168.20.0/24`. No router or default gateway existed between the networks.
 
-Solution:
+Solution: Restore PC2 to `192.168.10.11/24`.
 
-What I learned:
+What I learned: A switch provides Layer 2 connectivity inside the LAN, while communication between different IP networks requires routing.
 
 ## Useful Commands
-Commands I learn during the labs will be documented here along with an explanation of what they do.
+| Command | Purpose |
+| --- | --- |
+| `ping <IP>` | Tests IP connectivity to another host |
+| `arp -a` | Displays IP-to-MAC mappings in the ARP table |
+| `enable` | Enters privileged EXEC mode on a Cisco device |
+| `show mac address-table` | Displays MAC addresses learned by the switch and their associated ports |
 
 ## Screenshots and Network Diagrams
-I will add screenshots and diagrams from Packet Tracer as the labs are completed.
-
-## What I Learned
-I will update this section as I become comfortable explaining networking concepts in my own words.
+Packet Tracer files, screenshots, and diagrams will be added as the labs progress.
 
 ## Current Status
-Project started. Initial repository and documentation structure created.
+Lab 1 - Basic LAN completed. Next: Lab 2 - Routing Between Networks.
