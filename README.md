@@ -77,12 +77,63 @@ I restored PC2 to `192.168.10.11/24` and verified connectivity again.
 - `show mac address-table` displays the switch MAC address table.
 - Communication between different IP networks requires Layer 3 routing.
 
-### Lab 2 - Routing Between Networks
-- [ ] Add a router
-- [ ] Create two IP networks
-- [ ] Configure router interfaces
-- [ ] Configure default gateways
-- [ ] Verify communication between networks
+### Lab 2 - Routing Between Networks ✅
+- [x] Add a Cisco router between two switched LANs
+- [x] Create two IPv4 networks
+- [x] Configure and enable router interfaces through Cisco IOS
+- [x] Configure default gateways on both PCs
+- [x] Verify router interfaces with `show ip interface brief`
+- [x] Inspect connected and local routes with `show ip route`
+- [x] Verify end-to-end communication between networks
+- [x] Save the router configuration to startup-config
+
+#### Topology
+```text
+PC1                 Switch1          Router          Switch2                 PC2
+192.168.10.10/24  -----------  G0/0        G0/1  -----------  192.168.20.10/24
+                               .10.1        .20.1
+```
+
+#### Addressing
+| Device | Interface | IPv4 Address | Default Gateway |
+| --- | --- | --- | --- |
+| PC1 | FastEthernet0 | 192.168.10.10/24 | 192.168.10.1 |
+| Router | G0/0 | 192.168.10.1/24 | N/A |
+| Router | G0/1 | 192.168.20.1/24 | N/A |
+| PC2 | FastEthernet0 | 192.168.20.10/24 | 192.168.20.1 |
+
+#### Router Configuration
+```text
+enable
+configure terminal
+interface gigabitEthernet 0/0
+ip address 192.168.10.1 255.255.255.0
+no shutdown
+exit
+interface gigabitEthernet 0/1
+ip address 192.168.20.1 255.255.255.0
+no shutdown
+end
+```
+
+#### Verification
+Both router interfaces reached an `up/up` state. PC1 successfully pinged its default gateway and PC2 on the remote network with 0% packet loss after ARP resolution.
+
+The routing table contained directly connected routes for `192.168.10.0/24` through G0/0 and `192.168.20.0/24` through G0/1.
+
+#### Troubleshooting
+During verification, G0/1 was initially configured as `192.68.20.1` instead of `192.168.20.1`. The physical interface still showed `up/up`, demonstrating that link status alone does not prove the Layer 3 configuration is correct. I found the error with `show ip interface brief` and corrected the address.
+
+#### What I Learned
+- Routers forward traffic between different IP networks.
+- Hosts send remote-network traffic to their default gateway.
+- Router interfaces need an IP address and `no shutdown`.
+- `show ip interface brief` quickly verifies interface addressing and status.
+- `show ip route` displays the router's routing table.
+- `C` identifies connected network routes and `L` identifies the router's local interface addresses.
+- Directly connected networks are added to the routing table automatically when their interfaces are operational.
+- A successful ping across the router confirms Layer 3 connectivity.
+- `copy running-config startup-config` saves the active configuration.
 
 ### Lab 3 - VLANs
 - [ ] Create IT, HR, Finance, and Sales VLANs
@@ -129,9 +180,16 @@ What I learned: A switch provides Layer 2 connectivity inside the LAN, while com
 | `arp -a` | Displays IP-to-MAC mappings in the ARP table |
 | `enable` | Enters privileged EXEC mode on a Cisco device |
 | `show mac address-table` | Displays MAC addresses learned by the switch and their associated ports |
+| `configure terminal` | Enters global configuration mode |
+| `interface gigabitEthernet 0/0` | Enters configuration mode for a router interface |
+| `ip address <IP> <mask>` | Assigns an IPv4 address and subnet mask to an interface |
+| `no shutdown` | Administratively enables an interface |
+| `show ip interface brief` | Summarizes interface IP addresses and up/down status |
+| `show ip route` | Displays the router's IPv4 routing table |
+| `copy running-config startup-config` | Saves the active configuration for the next reboot |
 
 ## Screenshots and Network Diagrams
 Packet Tracer files, screenshots, and diagrams will be added as the labs progress.
 
 ## Current Status
-Lab 1 - Basic LAN completed. Next: Lab 2 - Routing Between Networks.
+Labs 1 and 2 completed. Next: Lab 3 - VLANs.
