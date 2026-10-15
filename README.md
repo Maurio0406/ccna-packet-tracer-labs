@@ -135,18 +135,66 @@ During verification, G0/1 was initially configured as `192.68.20.1` instead of `
 - A successful ping across the router confirms Layer 3 connectivity.
 - `copy running-config startup-config` saves the active configuration.
 
-### Lab 3 - VLANs
-- [ ] Create IT, HR, Finance, and Sales VLANs
-- [ ] Assign switch access ports
-- [ ] Configure trunking
-- [ ] Verify VLAN configuration
+### Lab 3 - VLANs ✅
+- [x] Create IT, HR, Finance, and Sales VLANs on a Cisco 2960
+- [x] Assign four access ports to their respective VLANs
+- [x] Configure static IP addresses for four PCs
+- [x] Verify VLAN assignments with `show vlan brief`
+- [x] Test VLAN isolation using ping
+- [x] Temporarily move HR's PC into the IT VLAN to test same-VLAN connectivity
+- [x] Restore HR's original VLAN and IP address
+- [x] Save the switch running configuration to startup-config
 
-### Lab 4 - Inter-VLAN Routing
+#### Topology and Addressing
+| PC | Department | VLAN | Switch Port | IP Address |
+| --- | --- | --- | --- | --- |
+| PC1 | IT | 10 | Fa0/1 | 192.168.10.10/24 |
+| PC2 | HR | 20 | Fa0/2 | 192.168.20.10/24 |
+| PC3 | Finance | 30 | Fa0/3 | 192.168.30.10/24 |
+| PC4 | Sales | 40 | Fa0/4 | 192.168.40.10/24 |
+
+All four PCs connect to one Cisco 2960 switch. No router or default gateways are configured.
+
+#### Switch Configuration Example
+```text
+enable
+configure terminal
+vlan 10
+name IT
+exit
+interface fastEthernet 0/1
+switchport mode access
+switchport access vlan 10
+end
+show vlan brief
+copy running-config startup-config
+```
+The same VLAN creation and access-port assignment process was repeated for HR (20), Finance (30), and Sales (40).
+
+#### Verification and Experiment
+`show vlan brief` showed Fa0/1 in VLAN 10, Fa0/2 in VLAN 20, Fa0/3 in VLAN 30, and Fa0/4 in VLAN 40. A ping from IT's PC1 to HR's PC2 timed out as expected because the VLANs are isolated and no inter-VLAN routing is configured.
+
+For an experiment, PC2 was temporarily changed to `192.168.10.20/24` and its Fa0/2 switch port was moved into VLAN 10. The user confirmed the same-VLAN test succeeded. PC2's IP and switch port were then restored to the HR network and VLAN 20.
+
+#### What I Learned
+- VLANs create separate Layer 2 broadcast domains on a shared physical switch.
+- Cisco switch ports belong to VLAN 1 by default.
+- Creating a VLAN does not automatically move ports into it.
+- An access port belongs to one VLAN, while a trunk carries multiple VLANs.
+- Devices in different VLANs require Layer 3 routing to communicate.
+- `show vlan brief` verifies VLAN names and access-port membership.
+
+### Lab 4 - Trunking
+- [ ] Connect two switches
+- [ ] Configure and verify an 802.1Q trunk
+- [ ] Test same-VLAN connectivity across switches
+
+### Lab 5 - Inter-VLAN Routing
 - [ ] Configure routing between VLANs
 - [ ] Verify connectivity
 - [ ] Troubleshoot an intentionally broken configuration
 
-### Lab 5 - Network Services and Security
+### Lab 6 - Network Services and Security
 - [ ] Configure DHCP
 - [ ] Configure SSH
 - [ ] Configure an ACL
@@ -186,10 +234,15 @@ What I learned: A switch provides Layer 2 connectivity inside the LAN, while com
 | `no shutdown` | Administratively enables an interface |
 | `show ip interface brief` | Summarizes interface IP addresses and up/down status |
 | `show ip route` | Displays the router's IPv4 routing table |
+| `vlan 10` | Creates or enters VLAN 10 configuration mode |
+| `name IT` | Names the selected VLAN |
+| `switchport mode access` | Configures a switch port as an access port |
+| `switchport access vlan 10` | Assigns an access port to VLAN 10 |
+| `show vlan brief` | Lists VLANs and their assigned access ports |
 | `copy running-config startup-config` | Saves the active configuration for the next reboot |
 
 ## Screenshots and Network Diagrams
 Packet Tracer files, screenshots, and diagrams will be added as the labs progress.
 
 ## Current Status
-Labs 1 and 2 completed. Next: Lab 3 - VLANs.
+Labs 1, 2, and 3 completed. Next: Lab 4 - Trunking.
