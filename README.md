@@ -221,6 +221,41 @@ Solution: Restore PC2 to `192.168.10.11/24`.
 
 What I learned: A switch provides Layer 2 connectivity inside the LAN, while communication between different IP networks requires routing.
 
+## Networking Vocabulary
+
+Key networking terms from the labs, explained in plain language. This section will grow as new concepts are introduced.
+
+| Term | Meaning | Example or Why It Matters |
+| --- | --- | --- |
+| LAN (Local Area Network) | A network connecting devices in a limited area, such as an office or home. | The two PCs and switch in Lab 1 formed a LAN. |
+| Switch | A device that forwards Ethernet frames to devices on a LAN using MAC addresses. | The Cisco 2960 connects our PCs. |
+| Router | A device that forwards IP packets between different networks. | Lab 2 used a router to connect two /24 networks. |
+| IP address (IPv4) | A logical address identifying an interface on an IP network. | `192.168.10.10` |
+| Subnet | A group of IP addresses belonging to the same network prefix. | `192.168.10.0/24` |
+| Subnet mask | Identifies which bits of an IPv4 address are the network portion. | `255.255.255.0` corresponds to `/24`. |
+| Default gateway | The router address a host uses to send traffic to other networks. | PC1 used `192.168.10.1` in Lab 2. |
+| MAC address | A Layer 2 hardware address used for Ethernet delivery within a LAN. | A switch learns MAC addresses on its ports. |
+| ARP (Address Resolution Protocol) | Finds the MAC address associated with an IPv4 address on the local network. | `arp -a` shows learned IP-to-MAC mappings. |
+| Ethernet frame | A Layer 2 unit of data carrying source and destination MAC addresses. | Switches forward frames. |
+| IP packet | A Layer 3 unit of data carrying source and destination IP addresses. | Routers forward packets between networks. |
+| OSI Layer 2 (Data Link) | The layer responsible for local network framing and MAC-based forwarding. | Switches and VLANs operate primarily at Layer 2. |
+| OSI Layer 3 (Network) | The layer responsible for logical addressing and routing between networks. | Routers use Layer 3 IP addresses. |
+| Routing table | A router's list of known network destinations and how to reach them. | `show ip route` displays it. |
+| Connected route (C) | A route to a network directly attached to an active router interface. | `192.168.10.0/24` on G0/0 in Lab 2. |
+| Local route (L) | A route to the router's own interface IP address, usually shown as `/32` for IPv4. | `192.168.10.1/32` in Lab 2. |
+| Interface | A network connection point on a device, physical or virtual. | `FastEthernet0/1` or `GigabitEthernet0/0`. |
+| VLAN (Virtual LAN) | A logical Layer 2 network that separates broadcast domains on a switch. | IT uses VLAN 10; HR uses VLAN 20. |
+| Broadcast domain | The group of devices that receive a Layer 2 broadcast. | Each VLAN is a separate broadcast domain. |
+| Access port | A switch port configured to carry traffic for one VLAN. | Fa0/1 belongs to VLAN 10 in Lab 3. |
+| Trunk port | A link that carries traffic for multiple VLANs, typically between network devices. | We'll configure trunks in Lab 4. |
+| Inter-VLAN routing | Layer 3 forwarding that lets devices in different VLANs communicate. | Without it, IT cannot ping HR in Lab 3. |
+| Ping | A tool that uses ICMP echo messages to test IP reachability. | We used it to verify routing and VLAN isolation. |
+| ICMP (Internet Control Message Protocol) | A protocol used for network error reporting and diagnostics. | Ping uses ICMP Echo Request and Echo Reply. |
+| TTL (Time to Live) | An IP packet field reduced by routers to prevent endless forwarding loops. | The routed PC reply in Lab 2 showed TTL 127. |
+| Running configuration | The currently active Cisco device configuration, stored in RAM. | Changes take effect in the running config. |
+| Startup configuration | The saved configuration used when a Cisco device boots. | `copy running-config startup-config` saves changes. |
+| Cisco IOS | Cisco's network operating system and command-line environment. | Used to configure our switches and router. |
+
 ## Useful Commands
 | Command | Purpose |
 | --- | --- |
